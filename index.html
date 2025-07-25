@@ -1,55 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>GPS Tracker</title>
   <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    #status {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h2>Tracking your location...</h2>
+  <h2>🔍 正在定位中…</h2>
   <p id="status">尚未初始化</p>
 
   <script>
-    const BACKEND_API = null; // 尚未串接後端
-
+    const BACKEND_API = null; // 後端尚未啟用
 
     async function initLiff() {
       try {
-        await liff.init({ liffId: "2007817062-Vd81OlyK" }); // 替換成你的 LIFF ID
+        // 初始化 LIFF SDK
+        await liff.init({ liffId: "2007817062-Vd81OlyK" });
 
         if (!liff.isLoggedIn()) {
           liff.login(); // 自動登入
+          return;
         }
 
         const profile = await liff.getProfile();
         const userId = profile.userId;
-        document.getElementById("status").innerText = "開始追蹤中...";
+        document.getElementById("status").innerText = "✅ 已登入，開始追蹤位置…";
 
         startTracking(userId);
       } catch (err) {
-        document.getElementById("status").innerText = "LIFF 初始化失敗：" + err;
+        console.error("LIFF 初始化失敗", err);
+        document.getElementById("status").innerText = "❌ LIFF 初始化失敗：" + err.message;
       }
     }
 
     function startTracking(userId) {
-      setInterval(() => {
-        navigator.geolocation.getCurrentPosition(pos => {
-          const { latitude, longitude } = pos.coords;
+      if (!navigator.geolocation) {
+        document.getElementById("status").innerText = "❌ 你的瀏覽器不支援 GPS 位置功能";
+        return;
+      }
 
-          fetch(BACKEND_API, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              userId,
-              latitude,
-              longitude,
-              timestamp: new Date().toISOString()
-            })
-          });
-        });
-      }, 10000); // 每10秒發送一次
+      setInterval(() => {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            const { latitude, longitude } = pos.coords;
+            const time = new Date().toLocaleTimeString();
+            document.getElementById("status").innerText =
+              `📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time}`;
+
+            // 將來可用於傳送資料至後端 API：
+            // fetch(BACKEND_API, {
+            //   method: "POST",
+            //   headers: { "Content-Type": "application/json" },
+            //   body: JSON.stringify({
+            //     userId,
+            //     latitude,
+            //     longitude,
+            //     timestamp: new Date().toISOString()
+            //   })
+            // });
+          },
+          err => {
+            console.error("位置獲取失敗", err);
+            document.getElementById("status").innerText = "❌ 無法取得 GPS 位置：" + err.message;
+          }
+        );
+      }, 10000); // 每10秒更新一次
     }
 
     initLiff();
