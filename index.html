@@ -18,7 +18,7 @@
   </style>
 </head>
 <body>
-  <h2>🔍 正在定位中…</h2>
+  <h2>🔍 正在守護中，請勿關閉畫面…</h2>
   <p id="status">尚未初始化</p>
 
   <script>
@@ -36,7 +36,7 @@
 
         const profile = await liff.getProfile();
         const userId = profile.userId;
-        document.getElementById("status").innerText = "✅ 已登入，開始追蹤位置…";
+        document.getElementById("status").innerText = "✅ 已登入，開始守護…";
 
         startTracking(userId);
       } catch (err) {
