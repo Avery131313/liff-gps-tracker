@@ -59,17 +59,17 @@
             document.getElementById("status").innerText =
               `📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time}`;
 
-            // 將來可用於傳送資料至後端 API：
-            // fetch(BACKEND_API, {
-            //   method: "POST",
-            //   headers: { "Content-Type": "application/json" },
-            //   body: JSON.stringify({
-            //     userId,
-            //     latitude,
-            //     longitude,
-            //     timestamp: new Date().toISOString()
-            //   })
-            // });
+             將來可用於傳送資料至後端 API：
+             fetch(BACKEND_API, {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
+               body: JSON.stringify({
+                 userId,
+                 latitude,
+                 longitude,
+                 timestamp: new Date().toISOString()
+               })
+             });
           },
           err => {
             console.error("位置獲取失敗", err);
