@@ -26,11 +26,10 @@
 
     async function initLiff() {
       try {
-        // 初始化 LIFF SDK
         await liff.init({ liffId: "2007817062-Vd81OlyK" });
 
         if (!liff.isLoggedIn()) {
-          liff.login(); // 自動登入
+          liff.login();
           return;
         }
 
@@ -59,27 +58,28 @@
             document.getElementById("status").innerText =
               `📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time}`;
 
-             將來可用於傳送資料至後端 API：
-             fetch(BACKEND_API, {
-               method: "POST",
-               headers: { "Content-Type": "application/json" },
-               body: JSON.stringify({
-                 userId,
-                 latitude,
-                 longitude,
-                 timestamp: new Date().toISOString()
-               })
-             });
+            // 傳送資料至後端 API
+            fetch(BACKEND_API, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userId,
+                latitude,
+                longitude,
+                timestamp: new Date().toISOString()
+              })
+            });
           },
           err => {
             console.error("位置獲取失敗", err);
             document.getElementById("status").innerText = "❌ 無法取得 GPS 位置：" + err.message;
           }
         );
-      }, 10000); // 每10秒更新一次
+      }, 10000);
     }
 
     initLiff();
   </script>
 </body>
 </html>
+
