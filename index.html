@@ -14,6 +14,7 @@
       font-size: 18px;
       margin-top: 20px;
       color: #333;
+      white-space: pre-line; /* ✅ 支援換行顯示 \n */
     }
   </style>
 </head>
@@ -56,7 +57,7 @@
             const { latitude, longitude } = pos.coords;
             const time = new Date().toLocaleTimeString();
             document.getElementById("status").innerText =
-              📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time};
+              `📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time}`;
 
             // 傳送資料至後端 API
             fetch(BACKEND_API, {
