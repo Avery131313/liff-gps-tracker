@@ -23,8 +23,6 @@
 
   <script>
     const BACKEND_API = "https://liff-backend-6q5u.onrender.com/location";
-    const STOP_API = "https://liff-backend-6q5u.onrender.com/stop";
-    let userId = "";
 
     async function initLiff() {
       try {
@@ -36,7 +34,7 @@
         }
 
         const profile = await liff.getProfile();
-        userId = profile.userId;
+        const userId = profile.userId;
         document.getElementById("status").innerText = "✅ 已登入，開始守護…";
 
         startTracking(userId);
@@ -58,8 +56,9 @@
             const { latitude, longitude } = pos.coords;
             const time = new Date().toLocaleTimeString();
             document.getElementById("status").innerText =
-              `📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time}`;
+              📍 座標更新：${latitude.toFixed(5)}, ${longitude.toFixed(5)}\n時間：${time};
 
+            // 傳送資料至後端 API
             fetch(BACKEND_API, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -78,16 +77,6 @@
         );
       }, 10000);
     }
-
-    window.addEventListener("beforeunload", () => {
-      if (userId) {
-        fetch(STOP_API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId })
-        });
-      }
-    });
 
     initLiff();
   </script>
